@@ -1,0 +1,85 @@
+{
+  "rules": {
+    "channels": {
+      ".read": false,
+      ".write": false,
+      "$channel_id": {
+        ".read": false,
+        ".write": false,
+        "info": {
+          ".read": true,
+          ".write": false,
+          "privacy": {
+            ".read": true,
+            ".write": "root.child('channels').child($channel_id).child('info').child('owner').val() === auth.uid",
+          },
+          "owner": {
+            ".read": true,
+            ".write": "!data.exists() && data.val() === auth.uid",
+          },
+          "title": {
+            ".write": "root.child('channels').child($channel_id).child('info').child('owner').val() === auth.uid",
+            ".read": true,
+          },
+          "description": {
+            ".write": "root.child('channels').child($channel_id).child('info').child('owner').val() === auth.uid",
+            ".read": true,
+          },
+        },
+        "members": {
+          ".write": false,
+          ".read": true,
+          "$user_id": {
+            ".write": "$user_id === auth.uid",
+          }
+        },
+        "messages": {
+          ".read": "data.child('members').hasChild(auth.uid)",
+          ".write": false,
+          "$message_uid": {
+            ".write": "!data.exists() && auth !== null",
+            ".read": true
+          }
+        }
+      }
+    },
+    "users": {
+      ".read": true,
+      "$user_id": {
+        ".write": "$user_id === auth.uid",
+        ".read": true,
+        "publicInfo": {
+          "name": {
+            ".read": true,
+          },
+          "description": {
+            ".read": true,
+          },
+          "photoURL": {
+            ".read": true,
+          },
+        },
+        "friends": {
+          ".read": "$user_id === auth.uid",
+        },
+        "last_channel_id": {
+          ".read": "$user_id === auth.uid",
+        },
+        "last_private_id": {
+          ".read": "$user_id === auth.uid",
+        },
+      }
+    },
+    "private": {
+    	"$chat_id": {
+        ".write": "$chat_id.contains(auth.uid)",
+        ".read": "$chat_id.contains(auth.uid)",
+        "messages": {
+          "message": {
+            ".write": "!data.exists()",
+          }
+        }
+      }
+    },
+  }
+}
